@@ -14,10 +14,13 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get install -y sudo python3 python-pycurl python-crypto tesseract-ocr python-openssl python-imaging python-qt4 rhino python-passlib curl-dev ffmpeg openssl p7zip sqlite
+$STD apt-get update
+$STD apt-get install -y sudo python3 python3-pip python3-pycurl tesseract-ocr python3-openssl python3-pil rhino python3-passlib curl ffmpeg openssl p7zip sqlite3 build-essential python3-dev
 msg_ok "Installed Dependencies"
 
 msg_info "Installing pyLoad"
+rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
+$STD pip install pycrypto
 $STD pip install --pre pyload-ng pyload-ng[plugins]
 msg_ok "Installed pyLoad"
 
@@ -54,13 +57,13 @@ systemctl stop pyload &> /dev/null
 msg_ok "Created Service"
 
 
-msg_info "Generating self-signed SSL certificate"
-mkdir -p /var/lib/pyload/ssl
-openssl req -x509 -newkey rsa:4096 -sha512 -days 36500 -nodes -subj "/" -keyout /var/lib/pyload/ssl/key.pem -out /var/lib/pyload/ssl/cert.pem &> /dev/null
-chown -R pyload:pyload /var/lib/pyload/ssl
-chmod 0755 /var/lib/pyload/ssl
-chmod 0640 /var/lib/pyload/ssl/*
-msg_ok "Generated self-signed SSL certificate"
+#msg_info "Generating self-signed SSL certificate"
+#mkdir -p /var/lib/pyload/ssl
+#openssl req -x509 -newkey rsa:4096 -sha512 -days 36500 -nodes -subj "/" -keyout /var/lib/pyload/ssl/key.pem -out /var/lib/pyload/ssl/cert.pem &> /dev/null
+#chown -R pyload:pyload /var/lib/pyload/ssl
+#chmod 0755 /var/lib/pyload/ssl
+#chmod 0640 /var/lib/pyload/ssl/*
+#msg_ok "Generated self-signed SSL certificate"
 
 msg_info "Configuring"
 mkdir -p /tmp/pyload
@@ -74,10 +77,10 @@ sed -i 's@folder storage_folder : "Download folder" =.*@folder storage_folder : 
 
 sed -i 's@bool develop : "Development mode" =.*@bool develop : "Development mode" = False@' /var/lib/pyload/settings/pyload.cfg
 sed -i 's@ip host : "IP address" =.*@ip host : "IP address" = 0.0.0.0@' /var/lib/pyload/settings/pyload.cfg
-sed -i 's@file ssl_certchain : "CA'\''s intermediate certificate bundle (optional)" =.*@file ssl_certchain : "CA'\''s intermediate certificate bundle (optional)" =@' /var/lib/pyload/settings/pyload.cfg
-sed -i 's@file ssl_certfile : "SSL Certificate" =.*@file ssl_certfile : "SSL Certificate" = /var/lib/pyload/ssl/cert.pem@' /var/lib/pyload/settings/pyload.cfg
-sed -i 's@file ssl_keyfile : "SSL Key" =.*@file ssl_keyfile : "SSL Key" = /var/lib/pyload/ssl/key.pem@' /var/lib/pyload/settings/pyload.cfg
-sed -i 's@bool use_ssl : "Use HTTPS" =.*@bool use_ssl : "Use HTTPS" = True@' /var/lib/pyload/settings/pyload.cfg
+#sed -i 's@file ssl_certchain : "CA'\''s intermediate certificate bundle (optional)" =.*@file ssl_certchain : "CA'\''s intermediate certificate bundle (optional)" =@' /var/lib/pyload/settings/pyload.cfg
+#sed -i 's@file ssl_certfile : "SSL Certificate" =.*@file ssl_certfile : "SSL Certificate" = /var/lib/pyload/ssl/cert.pem@' /var/lib/pyload/settings/pyload.cfg
+#sed -i 's@file ssl_keyfile : "SSL Key" =.*@file ssl_keyfile : "SSL Key" = /var/lib/pyload/ssl/key.pem@' /var/lib/pyload/settings/pyload.cfg
+#sed -i 's@bool use_ssl : "Use HTTPS" =.*@bool use_ssl : "Use HTTPS" = True@' /var/lib/pyload/settings/pyload.cfg
 msg_ok "Configured"
 
 msg_info "Starting"

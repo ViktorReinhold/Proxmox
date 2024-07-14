@@ -14,7 +14,8 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get update
+$STD apt-get update &> /dev/null
+$STD apt-get install -y curl &> /dev/null
 $STD apt-get install -y sudo python3 python3-pip python3-pycurl tesseract-ocr python3-openssl python3-pil rhino python3-passlib curl ffmpeg openssl p7zip sqlite3 build-essential python3-dev
 msg_ok "Installed Dependencies"
 
